@@ -1,0 +1,7 @@
+item_id,brand,condition,msrp,width,depth,height,style,image_url,label
+1001,Generic,Good,899.99,84,36,32,Modern,https://example.com/img1.jpg,1
+1002,West Elm,Excellent,1299.99,90,38,34,Contemporary,https://example.com/img2.jpg,1
+1003,IKEA,Fair,399.99,72,32,30,Scandinavian,https://example.com/img3.jpg,0
+1004,Article,Good,1599.99,86,40,33,Mid-Century,https://example.com/img4.jpg,1
+1005,Unknown,Poor,299.99,78,34,31,Traditional,https://example.com/img5.jpg,0
+
