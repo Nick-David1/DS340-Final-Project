@@ -117,6 +117,7 @@ config/secrets.json
 # ==========================================
 # Experiment outputs
 experiments/
+!notebooks/experiments/dataset_utils.py
 outputs/
 runs/
 logs/
