@@ -117,6 +117,7 @@ config/secrets.json
 # ==========================================
 # Experiment outputs (but keep experiment code)
 experiments/models/
+!notebooks/experiments/dataset_utils.py
 experiments/results/
 experiments/paper_figures/
 experiments/logs/
