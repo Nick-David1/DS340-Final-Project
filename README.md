@@ -106,6 +106,205 @@ ls -lh results/advanced_models_both_only.json
 ---
 
 
+##  Image-Only CNN Experiments
+
+### Overview
+
+Located in `experiments/image_only/`, these experiments evaluate transfer learning approaches using pre-trained CNNs to predict furniture saleability from images alone.
+
+### Models Evaluated
+
+| Model | Architecture | Params | Accuracy | F1 Score | Training Time |
+|-------|-------------|--------|----------|----------|---------------|
+| **ResNet50** | 50 layers, skip connections | 23.5M | **83.5%** | **83.2%** | ~45 min |
+| **EfficientNet-B0** | Efficient scaling | 4.0M | 82.9% | 82.8% | ~35 min |
+| **VGG16** | 16 layers, simple architecture | 14.7M | 82.1% | 81.9% | ~40 min |
+
+### Transfer Learning Strategy
+
+- **Pre-trained weights**: ImageNet (1.2M images, 1000 classes)
+- **Feature extraction**: Freeze all convolutional layers
+- **Classifier head**: Replace with simplified 3-layer head:
+  - Global Average Pool → Dropout(0.5) → Dense(512, ReLU) → Dropout(0.3) → Dense(2, Softmax)
+- **Fine-tuning**: Disabled (frozen features performed better than end-to-end fine-tuning)
+
+### Data Processing
+
+**Image Augmentation** (training only):
+```python
+transforms.Compose([
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(degrees=15),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+```
+
+**Validation/Test** (no augmentation):
+- Resize to 256×256
+- Center crop to 224×224
+- Normalize with ImageNet stats
+
+### Training Configuration
+
+```python
+# Hyperparameters
+BATCH_SIZE = 32
+LEARNING_RATE = 0.001
+EPOCHS = 20
+OPTIMIZER = Adam
+LOSS = CrossEntropyLoss
+EARLY_STOPPING = 5 epochs patience (val F1)
+```
+
+**Hardware**:
+- Training time: 35-45 minutes per model on MacBook M1 Pro
+- GPU training recommended but not required
+- Models automatically save best checkpoint based on validation F1
+
+### Running the Experiments
+
+#### Option 1: Run Individual Models
+
+```bash
+cd experiments/image_only
+
+# Train VGG16
+jupyter notebook experiment_1_vgg16.ipynb
+# Run all cells (Kernel → Restart & Run All)
+
+# Train ResNet50  
+jupyter notebook experiment_2_resnet50.ipynb
+# Run all cells
+
+# Train EfficientNet
+jupyter notebook experiment_3_efficientnet.ipynb
+# Run all cells
+```
+
+Each notebook will:
+1. Load dataset from HuggingFace (`nicholasdavid/furniture-saleability`)
+2. Apply data augmentation and create DataLoaders
+3. Initialize pre-trained model with custom classifier
+4. Train with early stopping (saves best checkpoint)
+5. Evaluate on test set
+6. Generate plots (loss curves, confusion matrix, metrics)
+7. Save results to `results/{model_name}/`
+
+**Expected output structure**:
+```
+experiments/image_only/
+├── models/
+│   ├── vgg16_best.pth          # Best checkpoint (lowest val loss)
+│   ├── resnet50_best.pth
+│   └── efficientnet_best.pth
+├── results/
+│   ├── vgg16/
+│   │   ├── metrics.json        # Detailed metrics
+│   │   ├── training_history.png
+│   │   └── confusion_matrix.png
+│   ├── resnet50/
+│   └── efficientnet/
+```
+
+#### Option 2: Compare All Models
+
+```bash
+cd experiments/image_only
+jupyter notebook model_comparison.ipynb
+```
+
+This notebook:
+- Loads results from all 3 models
+- Generates comparison visualizations:
+  - **Accuracy comparison** (bar chart)
+  - **F1 Score comparison** (bar chart)
+  - **Overall model comparison** (side-by-side metrics)
+- Saves `overall_model_comparison.png`
+
+#### Option 3: Quick Inference (Pre-trained Models)
+
+```python
+# In Python/Jupyter
+import torch
+from torchvision import models, transforms
+from PIL import Image
+
+# Load best model (ResNet50)
+model = models.resnet50(pretrained=False)
+model.fc = torch.nn.Sequential(
+    torch.nn.Dropout(0.5),
+    torch.nn.Linear(2048, 512),
+    torch.nn.ReLU(),
+    torch.nn.Dropout(0.3),
+    torch.nn.Linear(512, 2)
+)
+model.load_state_dict(torch.load('models/resnet50_best.pth'))
+model.eval()
+
+# Preprocess image
+transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+])
+
+img = Image.open('path/to/furniture.jpg')
+img_tensor = transform(img).unsqueeze(0)
+
+# Predict
+with torch.no_grad():
+    output = model(img_tensor)
+    prob = torch.softmax(output, dim=1)
+    pred = torch.argmax(prob, dim=1).item()
+    
+print(f"Decision: {'Accept' if pred == 1 else 'Reject'}")
+print(f"Confidence: {prob[0][pred].item():.2%}")
+```
+
+### Understanding the Results
+
+**Key Files**:
+- `results/{model}/metrics.json` - Complete evaluation metrics
+- `results/{model}/training_history.png` - Loss/accuracy curves
+- `results/{model}/confusion_matrix.png` - Error analysis
+
+**Metrics Interpretation**:
+```json
+{
+  "accuracy": 0.832,           // Overall correctness
+  "f1_score": 0.832,           // Harmonic mean of precision/recall
+  "precision": 0.831,          // Accept predictions correctness
+  "recall": 0.833,             // Accept items captured
+  "auc": 0.903,                // Ranking quality (0.5=random, 1.0=perfect)
+  "confusion_matrix": [[...]]  // TP/FP/TN/FN breakdown
+}
+```
+
+### HuggingFace Dataset Integration
+
+The experiments use the `nicholasdavid/furniture-saleability` dataset from HuggingFace:
+
+```python
+from datasets import load_dataset
+
+# Load from cloud (cached locally after first download)
+dataset = load_dataset("nicholasdavid/furniture-saleability", 
+                       split="train",
+                       data_mode="high_quality")  # Options: 'all', 'high_quality', 'brand_msrp_only'
+```
+
+**Data Modes**:
+- `all` (~26K samples) - All labeled furniture
+- `high_quality` (~15K samples) - Items with confident brand/MSRP labels
+- `brand_msrp_only` (~2.4K samples) - Items with both brand AND MSRP known
+
+---
+
+
 ##  Reproduction Instructions
 
 ### Step 1: Environment Setup (5 minutes)
