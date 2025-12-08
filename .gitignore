@@ -115,8 +115,11 @@ config/secrets.json
 # ==========================================
 # Project Specific
 # ==========================================
-# Experiment outputs
-experiments/
+# Experiment outputs (but keep experiment code)
+experiments/models/
+experiments/results/
+experiments/paper_figures/
+experiments/logs/
 outputs/
 runs/
 logs/
