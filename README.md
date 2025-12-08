@@ -1,10 +1,6 @@
 # DS340 Final Project: Furniture Saleability Prediction
 
-**Team**: Nick David & Adrian Dybacki  
-**Client**: second-edition.co  
-**Course**: DS340 Machine Learning  
-**Institution**: Boston University  
-**Date**: December 2025
+
 
 ---
 
@@ -20,7 +16,6 @@
 8. [Experimental Design](#experimental-design)
 9. [Technology Stack](#technology-stack)
 10. [Paper & Figures](#paper--figures)
-11. [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -334,13 +329,13 @@ cat ../RESULTS_SUMMARY.md
 
 ### Our Solution
 
-Built a **production AI labeling system** using Google Gemini 2.5 Flash multimodal API:
+Built a **AI labeling system** using Google Gemini 2.5 Flash multimodal API:
 
 **System Architecture**:
 1. **Stage 1**: Filter non-seating furniture (separate LLM call)
 2. **Stage 2**: Extract brand name (LLM + title analysis)
 3. **Stage 3**: Extract MSRP (LLM + Google Search in parallel)
-4. **Stage 4**: Apply CEO decision logic (resale value > $500)
+4. **Stage 4**: Verify with domain expert decision logic 
 
 **Multi-Source Validation**:
 - Image analysis (visual condition, brand logos)
@@ -358,7 +353,6 @@ Built a **production AI labeling system** using Google Gemini 2.5 Flash multimod
 
 **Code**: See `src/production_furniture_labeler.py` and `src/parallel_furniture_labeler.py`
 
-**Note**: The labeling system requires a Google AI API key. For reproduction, the **already-labeled dataset** (`DATASET_FINAL_WITH_IMAGES.csv`) is provided, so you don't need to run the labeling system.
 
 ---
 
@@ -438,7 +432,7 @@ Built a **production AI labeling system** using Google Gemini 2.5 Flash multimod
 
 ##  Paper & Figures
 
-### Generated Figures
+### Figures
 
 All figures are in `experiments/paper_figures/` (both PNG at 300 DPI and PDF):
 
@@ -449,45 +443,7 @@ All figures are in `experiments/paper_figures/` (both PNG at 300 DPI and PDF):
 5. **fig5_data_quality_impact.png**: Quality vs. quantity trade-off
 6. **fig6_training_curves.png**: Loss and F1 score progression
 
-### Results Summary
 
-See `RESULTS_SUMMARY.md` for:
-- Comprehensive performance tables
-- Feature importance analysis
-- Business impact calculations
-- Detailed experimental methodology
-- Future work recommendations
 
-### Presentation Materials
 
-See `PRESENTATION_OUTLINE.md` for lightning talk structure.
-
----
-
-##  Acknowledgments
-
-- **Client**: second-edition.co for providing the business problem and domain expertise
-- **Course**: DS340 Machine Learning, Boston University
-- **AI Tools**: Google Gemini 2.5 Flash for multimodal data labeling
-- **Datasets**: Facebook Marketplace public listings (properly collected)
-
----
-
-##  Contact
-
-**Team Members**:
-- Nick David
-- Adrian Dybacki
-
-**Course**: DS340 Final Project, Boston University
-
----
-
-##  License & Usage
-
-This project was developed for academic purposes as part of DS340 coursework. The dataset is proprietary and provided by second-edition.co. For questions about using this codebase or dataset, please contact the team members or course instructor.
-
----
-
-**Last Updated**: December 2025
 
