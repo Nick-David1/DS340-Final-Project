@@ -1,5 +1,5 @@
 """
-AI-Generated Training utilities for furniture classification experiments
+**AI-Generated based on class examples** Training utilities for furniture classification experiments
 Common training loops, evaluation functions, and metrics
 """
 

@@ -1,5 +1,5 @@
 """
-AI-Generated HuggingFace-based dataset utilities for furniture classification
+**AI-Generated** HuggingFace-based dataset utilities for furniture classification
 """
 
 import torch
