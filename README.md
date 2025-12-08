@@ -23,9 +23,6 @@
 
 This project develops a **machine learning system to predict furniture saleability** for consignment businesses. Given a furniture listing (images, title, description, and metadata), the system predicts whether to **Accept** (estimated resale value > $500) or **Reject** the item for consignment pickup.
 
-### Business Context
-
-second-edition.co, a consignment furniture business, receives 100+ daily submissions. Manual review is time-consuming (2 min/item) and inconsistent. This system automates 85% of decisions, saving 1,017 hours/year and $30,510 in labor costs.
 
 ### Approach
 
