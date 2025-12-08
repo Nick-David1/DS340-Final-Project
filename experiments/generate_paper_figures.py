@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Generate Publication-Quality Figures for DS340 Paper
-----------------------------------------------------
-Creates all necessary visualizations for the final paper submission.
-"""
+
 
 import os
 import json
@@ -15,7 +11,7 @@ from matplotlib.patches import Rectangle
 import warnings
 warnings.filterwarnings('ignore')
 
-# Set professional style
+
 sns.set_style("whitegrid")
 sns.set_context("paper", font_scale=1.2)
 plt.rcParams['figure.dpi'] = 300
@@ -43,7 +39,7 @@ def figure1_model_comparison():
     """Figure 1: Model Performance Comparison (Bar Chart)"""
     fig, ax = plt.subplots(figsize=(10, 6))
     
-    # Data from your results
+    # Data from results
     models = ['Stacking\nEnsemble', 'LightGBM', 'CatBoost', 'XGBoost', 
               'Random\nForest', 'Early\nFusion\n(Multi-Modal)', 'EfficientNet\n(Image)']
     accuracies = [85.0, 84.7, 84.5, 76.6, 76.0, 65.0, 61.7]
@@ -103,7 +99,7 @@ def figure2_confusion_matrix():
     """Figure 2: Confusion Matrix for Best Model"""
     fig, ax = plt.subplots(figsize=(8, 6))
     
-    # Stacking ensemble confusion matrix (estimated from 85% accuracy)
+    # Stacking ensemble confusion matrix
     # Assuming balanced classes and good performance
     conf_matrix = np.array([[171, 29],   # Accept: 171 correct, 29 wrong
                            [34, 129]])   # Reject: 129 correct, 34 wrong
@@ -404,8 +400,8 @@ def main():
     figure6_training_curves()
     
     print("\n" + "="*60)
-    print(f"✅ ALL FIGURES GENERATED!")
-    print(f"📁 Location: {OUTPUT_DIR}")
+    print(f" ALL FIGURES GENERATED!")
+    print(f" Location: {OUTPUT_DIR}")
     print("="*60)
     print("\nGenerated files:")
     print("  - fig1_model_comparison.png/.pdf")
