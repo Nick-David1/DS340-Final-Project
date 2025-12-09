@@ -572,7 +572,7 @@ Built a **AI labeling system** using Google Gemini 2.5 Flash multimodal API:
 
 ---
 
-##  Paper & Figures
+##  Figures
 
 ### Figures
 
@@ -586,6 +586,10 @@ All figures are in `experiments/paper_figures/` (both PNG at 300 DPI and PDF):
 6. **fig6_training_curves.png**: Loss and F1 score progression
 
 
+---
 
+### Generative AI Usage
+
+This project utilized AI tools for purposes of development. We utilized AI to help with boilderplate code for ML expirements, syntax, and debugging.
 
 
